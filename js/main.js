@@ -7,15 +7,19 @@ canvas.height = ih;
 const rad = Math.PI / 180;
 
 class Tree {
-    constructor(sX, sY, eX, eY) {
-        this.sX = sX;
-        this.sY = sY;
-        this.eX = eX;
-        this.eY = eY;
+    constructor(angle) {
+        this.startX = 0
+        this.startY = 0
         this.color = "rgb(30,180,55)";
         this.branchCount = 0;
+        this.x = NaN
+        this.y = NaN
+        this.r_angle = angle
+        this.l_angle = -angle
     }
     draw(startX,startY,len,angle) {
+        // this.startX = startX
+        // this.startY = startY
         c.beginPath();
         c.save();
         c.translate(startX, startY);
@@ -36,10 +40,26 @@ class Tree {
             c.restore();
             return;
         }
-        this.draw(0, -len, len * 0.8, -angle);
-        this.draw(0, -len, len * 0.8,angle);
+        this.draw(0, -len, len * 0.8, this.l_angle);
+        this.draw(0, -len, len * 0.8,this.r_angle);
         c.restore();
+        window.requestAnimationFrame(this.draw)
+    }
+    interaction(){
+        canvas.onmousemove = (e)=>{
+            this.x = e.x
+            this.y = e.y
+            if(e.y<iw/3){
+                this.r_angle = this.r_angle*0.8
+                this.l_angle = this.l_angle*0.8
+            }
+            console.log(`mX ${this.x} mY ${this.y} angle ${this.r_angle} ${this.l_angle} sx ${this.startX}`)
+        }
     }
 }
-var t1 = new Tree(0, 0, 0, -50);
-t1.draw(iw/2,ih,70,20);
+var t1 = new Tree(20);
+t1.draw(iw/3,ih,90);
+
+var t2 = new Tree(20);
+t2.draw(iw/1.5,ih,70);
+t2.interaction()
